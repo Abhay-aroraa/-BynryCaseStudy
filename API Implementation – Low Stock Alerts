@@ -1,0 +1,52 @@
+GET /api/companies/{company_id}/alerts/low-stock
+
+Assumptions
+
+Recent sales = sales in last 30 days
+
+Threshold varies by product type
+
+One primary supplier per product
+
+Stockout days calculated using average daily sales
+
+@GetMapping("/api/companies/{companyId}/alerts/low-stock")
+public ResponseEntity<?> getLowStockAlerts(@PathVariable Long companyId) {
+
+    List<LowStockAlertDTO> alerts = inventoryService.getLowStockAlerts(companyId);
+
+    return ResponseEntity.ok(
+        Map.of(
+            "alerts", alerts,
+            "total_alerts", alerts.size()
+        )
+    );
+}
+
+for each warehouse in company:
+    for each product with recent sales:
+        if current_stock < threshold:
+            calculate days_until_stockout
+            fetch supplier
+            add alert
+
+
+edge Cases Handled
+
+No recent sales → no alert
+
+Zero stock → immediate alert
+
+Missing supplier → partial alert
+
+Multiple warehouses → separate alerts
+
+*****Why This Works
+
+Business-driven filtering
+
+Scalable for large inventories
+
+Clear separation of concerns
+
+Easy to extend for notifications
