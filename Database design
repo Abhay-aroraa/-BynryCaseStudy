@@ -1,0 +1,65 @@
+Part 2: Database Design
+Proposed Schema
+
+company (
+  id BIGINT PK,
+  name VARCHAR,
+  created_at TIMESTAMP
+)
+
+warehouse (
+  id BIGINT PK,
+  company_id BIGINT FK,
+  name VARCHAR,
+  location VARCHAR
+)
+
+product (
+  id BIGINT PK,
+  sku VARCHAR UNIQUE,
+  name VARCHAR,
+  price DECIMAL(10,2),
+  product_type VARCHAR
+)
+
+inventory (
+  id BIGINT PK,
+  product_id BIGINT FK,
+  warehouse_id BIGINT FK,
+  quantity INT,
+  UNIQUE(product_id, warehouse_id)
+)
+
+supplier (
+  id BIGINT PK,
+  name VARCHAR,
+  contact_email VARCHAR
+)
+inventory_audit (
+  id BIGINT PK,
+  inventory_id BIGINT FK,
+  previous_quantity INT,
+  new_quantity INT,
+  changed_at TIMESTAMP
+)
+product_supplier (
+  product_id BIGINT FK,
+  supplier_id BIGINT FK
+)
+product_bundle (
+  parent_product_id BIGINT FK,
+  child_product_id BIGINT FK,
+  quantity INT
+)
+
+Design Justification
+
+Separate inventory enables multi-warehouse support
+
+Audit table ensures traceability
+
+Unique constraints prevent duplication
+
+Bundle table supports composite products
+
+Indexed foreign keys improve performance
